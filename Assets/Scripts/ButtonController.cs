@@ -10,29 +10,31 @@ public class ButtonController : MonoBehaviour,
     [SerializeField] private float duration;
 
     private float _originSize;
+    private Transform _transform;
 
     private void Start()
     {
         _originSize = transform.localScale.x;
+        _transform = transform;
     }
     public void OnPointerDown(PointerEventData eventData)
     {
-        transform.DOScale(_originSize - 0.1f, duration);
+        _transform.DOScale(_originSize - 0.1f, duration);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        transform.DOScale(_originSize + 0.1f, duration);
+        _transform.DOScale(_originSize + 0.1f, duration);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        transform.DOScale(_originSize, duration);
+        _transform.DOScale(_originSize, duration);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        transform.DOScale(_originSize, duration).OnComplete(() =>
+        _transform.DOScale(_originSize, duration).OnComplete(() =>
         {
             uiController.PressButton(buttonType);
         });
