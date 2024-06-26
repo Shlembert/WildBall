@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +14,12 @@ public class IUController : MonoBehaviour
     [SerializeField] private float direction;
     [SerializeField] private float delayBetweenAnimations;
     [SerializeField] private float speedStart;
+    private Vector3 _sizeSetting;
+
+    private void Start()
+    {
+        _sizeSetting = settingPanel.transform.localScale;
+    }
 
     public void PressButton(ButtonType buttonType)
     {
@@ -32,6 +39,9 @@ public class IUController : MonoBehaviour
             case ButtonType.Setting:
                 Setting().Forget();
                 break;
+            case ButtonType.EscapeSetting:
+                EscapeSetting().Forget();
+                break;
             case ButtonType.Level_1:
                 sceneController.SceneLoad(1);
                 break;
@@ -48,6 +58,12 @@ public class IUController : MonoBehaviour
                 Application.Quit();
                 break;
         }
+    }
+
+    private async UniTask EscapeSetting()
+    {
+        HideSetting();
+        await ShowButtonsMenu();
     }
 
     private async UniTask Setting()
@@ -72,9 +88,9 @@ public class IUController : MonoBehaviour
         await HideButtonsMenu();
     }
 
-    private void ShowButtonsMenu()
+    private async UniTask ShowButtonsMenu()
     {
-        MoveButtonMenu(0, Ease.OutBack);
+        await MoveButtonMenu(0, Ease.OutBack);
     }
 
     private async UniTask HideButtonsMenu()
@@ -92,7 +108,17 @@ public class IUController : MonoBehaviour
     private void ShowSetting()
     {
         settingPanel.SetActive(true);
-        settingPanel.transform.DOScale(0, 0.3f).From().SetEase(Ease.OutBack);
+        settingPanel.transform.DOScale(Vector3.zero, 0.7f).From().SetEase(Ease.OutBack);
+    }
+
+    private void HideSetting()
+    {
+        settingPanel.transform.DOScale(Vector3.zero, 0.7f).SetEase(Ease.InBack).OnComplete(async () =>
+        {
+            settingPanel.transform.localScale = _sizeSetting;
+            settingPanel.SetActive(false);
+            await UniTask.Yield();
+        });
     }
 
     private UniTask MoveButtonMenu(float dir, Ease ease)
@@ -146,5 +172,10 @@ public class IUController : MonoBehaviour
         }
 
         return tcs.Task;
+    }
+
+    private void OnDisable()
+    {
+        DOTween.KillAll();
     }
 }

@@ -11,7 +11,7 @@ public class HoldController : MonoBehaviour
     [SerializeField] private float duration;
     [SerializeField] private float delayBetweenAnimations;
 
-    private async  void Start()
+    private async void Start()
     {
         await UniTask.Delay(600);
         HideHold().Forget();
