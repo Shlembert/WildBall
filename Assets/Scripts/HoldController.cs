@@ -11,6 +11,11 @@ public class HoldController : MonoBehaviour
     [SerializeField] private float duration;
     [SerializeField] private float delayBetweenAnimations;
 
+    private void Awake()
+    {
+        DOTween.SetTweensCapacity(500, 50);
+    }
+
     private async void Start()
     {
         await UniTask.Delay(600);

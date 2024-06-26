@@ -178,4 +178,9 @@ public class IUController : MonoBehaviour
     {
         DOTween.KillAll();
     }
+
+    private void OnDestroy()
+    {
+        DOTween.KillAll();
+    }
 }
